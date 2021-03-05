@@ -43,7 +43,7 @@ function Login (mode, url = '') {
                     iconUrl: 'img/icon.png',
                     title: 'ujsCAS登录助手',
                     message: '登录失败！网络连接问题（尝试次数过多）',
-                    requireInteraction: true,
+                    requireInteraction: false,
                     priority: 2
                 });
             } else {
@@ -103,7 +103,7 @@ function Login (mode, url = '') {
                         iconUrl: 'img/icon.png',
                         title: 'ujsCAS登录助手',
                         message: '当前已登录！',
-                        requireInteraction: true,
+                        requireInteraction: false,
                         priority: 2
                     });
                 } else {
@@ -140,7 +140,7 @@ function Login (mode, url = '') {
                 iconUrl: 'img/icon.png',
                 title: 'ujsCAS登录助手',
                 message: '用户名或密码未配置，登录失败！',
-                requireInteraction: true,
+                requireInteraction: false,
                 priority: 2
             });
         } else {
@@ -155,7 +155,7 @@ function Login (mode, url = '') {
                 iconUrl: 'img/icon.png',
                 title: 'ujsCAS登录助手',
                 message: '登陆网址未配置，使用默认网址',
-                requireInteraction: true,
+                requireInteraction: false,
                 priority: 2
             });
             serviceURL = encodeURIComponent('https://pass.ujs.edu.cn');
@@ -317,7 +317,7 @@ function Login (mode, url = '') {
                         iconUrl: 'img/icon.png',
                         title: 'ujsCAS登录助手',
                         message: '登录成功！',
-                        requireInteraction: true,
+                        requireInteraction: false,
                         priority: 2
                     });
                 } else {
@@ -343,7 +343,7 @@ function Login (mode, url = '') {
                             iconUrl: 'img/icon.png',
                             title: 'ujsCAS登录助手',
                             message: '登录失败！（用户名或密码有误）',
-                            requireInteraction: true,
+                            requireInteraction: false,
                             priority: 2
                         });
                     } else {
@@ -359,7 +359,7 @@ function Login (mode, url = '') {
                             iconUrl: 'img/icon.png',
                             title: 'ujsCAS登录助手',
                             message: '登录失败！（未知错误：' + errorText + '）',
-                            requireInteraction: true,
+                            requireInteraction: false,
                             priority: 2
                         });
                     } else {
