@@ -1,8 +1,8 @@
 {
 	"manifest_version": 2,
-	"name": "ujsAES登录助手",
+	"name": "ujsCAS登录助手",
 	"version": "1.0.0",
-	"description": "AES登录助手",
+	"description": "CAS登录助手",
 	"icons":
 	{
 		"16": "img/icon.png",
@@ -16,7 +16,7 @@
 	"browser_action": 
 	{
 		"default_icon": "img/icon.png",
-		"default_title": "ujsAES登录助手",
+		"default_title": "ujsCAS登录助手",
 		"default_popup": "popup.html"
 	},
 	"content_scripts": 

@@ -1,6 +1,6 @@
 var settings;
 function getSettings () {
-    chrome.storage.local.get({ inited: false, username: '', password: '' }, function (data) {
+    chrome.storage.local.get({ inited: false, username: '', password: '', serviceURL: '' }, function (data) {
         settings = data;
         if (!settings.inited) {
             window.open('options.html');
@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener(function (request) {
 chrome.runtime.onMessage.addListener(function (request) {
     if (request.type == 'page') {
         getSettings();
-        Login("page");
+        Login("page", request.url);
     }
 });
 //js Sleep
@@ -32,12 +32,7 @@ function sleep (time) {
 var status;
 var statusChecker;
 var statusCount = 0;
-function Login (mode) {
-    if (mode == 'page') {
-        console.log('接收到page');
-    } else {
-        console.log('接收到test');
-    }
+function Login (mode, url = '') {
     status = 0;
     statusChecker = window.setTimeout(function () {
         if (statusCount >= 5) {
@@ -53,7 +48,7 @@ function Login (mode) {
                 });
             } else {
                 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                    chrome.tabs.sendMessage(tabs[0].id, { type: 'tip', data: '登录失败！网络连接问题（尝试次数过多）'});
+                    chrome.tabs.sendMessage(tabs[0].id, { type: 'tip', data: '登录失败！网络连接问题（尝试次数过多）' });
                 });
             }
         }
@@ -63,7 +58,7 @@ function Login (mode) {
         }
     }, 1000 * 30);
     //要登录的网址
-    var serviceURL = 'http://yun.ujs.edu.cn/xxhgl/yqsb/index';
+    var serviceURL = settings.serviceURL;
     //用户名、密码
     var username = settings.username;
     var password = settings.password;
@@ -100,7 +95,7 @@ function Login (mode) {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             //是否已登录
             if (xmlhttp.response.indexOf("<i class=\"nav_icon nav_icon_logout\"></i><span>安全退出</span>") != -1) {
-                //已登录，直接打卡
+                //已登录
                 status = 1;
                 if (mode == 'test') {
                     chrome.notifications.create(null, {
@@ -119,7 +114,7 @@ function Login (mode) {
             } else {
                 if (mode == 'page') {
                     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                        chrome.tabs.sendMessage(tabs[0].id, { type: 'tip',data:'处理登录表单...' });
+                        chrome.tabs.sendMessage(tabs[0].id, { type: 'tip', data: '处理登录表单...' });
                     });
                 }
                 //读取表单提交项
@@ -154,7 +149,22 @@ function Login (mode) {
             });
         }
     } else {
-        xmlhttp.open('GET', 'https://pass.ujs.edu.cn/cas/login', true);
+        if (mode == 'test' && !serviceURL) {
+            chrome.notifications.create(null, {
+                type: 'basic',
+                iconUrl: 'img/icon.png',
+                title: 'ujsCAS登录助手',
+                message: '登陆网址未配置，使用默认网址',
+                requireInteraction: true,
+                priority: 2
+            });
+            serviceURL = encodeURIComponent('https://pass.ujs.edu.cn');
+        }
+        if (mode == 'page' && url.search('webvpn.ujs.edu.cn') != -1) {
+            xmlhttp.open('GET', url.substring(0, url.search('/cas/login') + 9), true);
+        } else {
+            xmlhttp.open('GET', 'https://pass.ujs.edu.cn/cas/login', true);
+        }
         xmlhttp.send();
     }
     var xmlhttp2 = new XMLHttpRequest();
@@ -177,7 +187,11 @@ function Login (mode) {
                 }
                 //POST to login
                 var login = new XMLHttpRequest();
-                login.open('POST', 'https://pass.ujs.edu.cn/cas/login?service=' + serviceURL, true);
+                if (mode == 'page') {
+                    login.open('POST', url, true);
+                } else {
+                    login.open('POST', 'https://pass.ujs.edu.cn/cas/login?service=' + serviceURL, true);
+                }
                 login.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
                 login.send(postStr);
             }

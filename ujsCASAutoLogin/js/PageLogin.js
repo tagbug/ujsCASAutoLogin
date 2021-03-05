@@ -1,5 +1,8 @@
 document.write('请稍等...\n');
 document.body.style = '-webkit-user-modify: read-write-plaintext-only !important;';
+var URL = decodeURIComponent(location.href);
+var start = URL.search('/cas/login?');
+var serviceURL = URL.substring(start + 19, URL.length);
 chrome.runtime.onMessage.addListener(function (request) {
     console.log(request);
     if (request.type == 'tip') {
@@ -10,9 +13,9 @@ chrome.runtime.onMessage.addListener(function (request) {
     console.log(request);
     if (request.type == 'loginOK') {
         //跳转
-        var URL = decodeURIComponent(location.href);
-        var start = URL.search('/cas/login?');
-        location.href = URL.substring(start + 19, URL.length);
+        location.href = serviceURL;
     }
 });
-chrome.runtime.sendMessage({ type: 'page' });
+chrome.storage.local.set({ serviceURL:serviceURL }, function () {
+    chrome.runtime.sendMessage({ type: 'page', url: location.href });
+});
