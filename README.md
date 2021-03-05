@@ -2,6 +2,8 @@
 
 江苏大学CAS登录助手（Chrome扩展程序）
 
+支持 https://pass.ujs.edu.cn/cas/login* 和 https://webvpn.ujs.edu.cn/*/*/cas/login*
+
 全自动帮你登录，不用再被烦人的输入用户名密码验证码的过程所困扰
 
 # 食用方法
